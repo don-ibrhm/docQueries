@@ -1,3 +1,6 @@
+import uvicorn
+from uvicorn.config import LOGGING_CONFIG
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,20 +10,41 @@ from llama_index import VectorStoreIndex, SimpleDirectoryReader, StorageContext,
 import openai
 import os
 
-openai.api_key = "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"
+with open("api_key.txt") as key:
+    api_key = key.readline().strip()
+    openai.api_key = open(api_key)
 
-if not os.path.isdir('data'):
-    os.mkdir('data')
-chroma_client = chromadb.PersistentClient("./storage")
-chroma_collection = chroma_client.get_or_create_collection("diverge")
-vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
-storage_context = StorageContext.from_defaults(vector_store=vector_store)
+storage_context = None
+index = None
+query_engine = None
 
-def reload():
-    global query_engine
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global index, storage_context
+    startup()
+    yield
+    index.storage_context.persist()
+    print("- Saved to memory")
+
+def startup():
+    global storage_context, index, query_engine
+    if not os.path.isdir('data'):
+        os.mkdir('data')
+    chroma_client = chromadb.PersistentClient("./storage")
+    chroma_collection = chroma_client.get_or_create_collection("diverge")
+    vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+    storage_context = StorageContext.from_defaults(vector_store=vector_store)
     documents = SimpleDirectoryReader('data').load_data()
     index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
     index.storage_context.persist()
+    query_engine = index.as_query_engine()
+    print("- Startup Complete")
+    
+
+def reload():
+    global query_engine, index, storage_context
+    documents = SimpleDirectoryReader('data').load_data()
+    index = VectorStoreIndex.from_documents(documents, storage_context=storage_context, show_progress=True)
     query_engine = index.as_query_engine()
     if not query_engine:
         print("Query Engine not properly initilaized\n" +
@@ -28,7 +52,7 @@ def reload():
     else:
         return query_engine
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -46,7 +70,6 @@ def root() -> str:
 
 @app.get("/query/")
 def query(text:str=None):
-    # query_engine = reload()
     global query_engine
     if not text:
         return "Provide a query with text (/query/?text=...)"
@@ -56,6 +79,7 @@ def query(text:str=None):
 
 @app.post("/upload/")
 def upload(document:UploadFile) -> str:
+    print("/upload/ pinged")
     if not document:
         return JSONResponse(content={"error": "No file provided"}, status_code=400)
     try:
@@ -64,6 +88,7 @@ def upload(document:UploadFile) -> str:
         doc_path = os.path.join('data', os.path.basename(doc_name))
         with open(doc_path, 'wb') as doc_local:
             doc_local.write(doc_file)
+        print(f"{doc_name} succesfully uploaded")
         reload()
         return(f"{doc_name} succesfully uploaded")
     except Exception as e:
@@ -82,9 +107,7 @@ def documents() -> list:
 #     query = input("What is your question: ")
 
 # print(__name__, end='\n\n\n')
-# if __name__ == '__main__':
-documents = SimpleDirectoryReader('data').load_data()
-index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
-index.storage_context.persist()
-query_engine = index.as_query_engine()
-print("--- MANUAL - RELOAD ---")
+
+if __name__ == '__main__':
+    LOGGING_CONFIG["formatters"]["default"]["fmt"] = "%(asctime)s [%(name)s] %(levelprefix)s %(message)s"
+    uvicorn.run("server:app", reload=True, host='0.0.0.0', port=8000)

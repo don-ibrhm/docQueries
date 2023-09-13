@@ -29,6 +29,7 @@ export default function DocumentViewer({refreshNeeded, setRefreshNeeded}) {
     const [selectedFile, setSelectedFile] = useState(null);
 
     function handleUpload() {
+        console.log("Trying to upload")
         if (selectedFile) {
             sendToServer(selectedFile).then(() => {
                 setRefreshNeeded(true);

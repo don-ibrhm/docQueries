@@ -41,6 +41,7 @@ export default function ChatWithDocument() {
                 newMessages = [...newMessages, {
                     text: response.text,
                     type: "Answer"
+                    // sources: response.
                 }]
                 setMessages(newMessages);
             });
@@ -59,7 +60,7 @@ export default function ChatWithDocument() {
                     {messages.map((message, index) => 
                         <Card sx={{ minWidth: 275 }} key={`#${index}`}>
                             <CardContent>
-                                <Typography>{message.type}: {message.text}...</Typography>
+                                <Typography>{message.type}: {message.text}</Typography>
                             </CardContent>
                         </Card>
                     )}
