@@ -51,7 +51,12 @@ export default function ChatWithDocument() {
     return (
         <Grid item xs={12} height='100%' classNames="p-9">
             <Stack>
-                <Box sx={{width: '100%', height: 500, backgroundColor: '#F4F4F4'}}>
+                <Box sx={{
+                    width: '100%', 
+                    height: 500, 
+                    backgroundColor: '#F4F4F4', 
+                    overflowY: 'auto',
+                }}>
                     {/* <Card sx={{ minWidth: 275 }}>
                         <CardContent>
                             <Typography>Question 0...</Typography>

@@ -29,14 +29,12 @@ export default function Home() {
     return (
         <Grid 
             container 
-            height='100%'
-            justifyContent="center" 
-            alignItems="center" 
-            spacing={3}
-            className="p-1">
-            <Grid item container xs={4} justifyContent="center" alignItems="center" spacing={2}>
-                <Grid item px={0}>
-                    <Stack spacing={2} margin={2}>
+            justifyContent="flex-start" 
+            alignItems="center"
+            className="min-h-screen min-w-screen p-0 m-0">
+            <Grid item container xs={0} md={2} className="invisible sm:visible w-full h-full p-0 m-0" justifyContent="flex-start" alignItems="center" spacing={0}>
+                <Grid item className="w-full h-full p-0 m-0">
+                    <Stack spacing={4} margin={0} alignItems="center" justifyContent="center" className="w-full p-0 m-0 pt-7">
                         <Image
                             src={logo}
                             width={135}
@@ -49,7 +47,7 @@ export default function Home() {
                 </Grid>
                 <Divider orientation="vertical" flexItem />
             </Grid>
-            <Grid item container xs={8} classNames="p-7 m-4" justifyContent="center" alignItems="center" spacing={5}>
+            <Grid item container xs={12} md={10} className="" justifyContent="center" alignItems="center" spacing={5}>
                 {/* <Header /> */}
                 <UserMenu />
                 <ChatWithDocument />

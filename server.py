@@ -10,9 +10,11 @@ from llama_index import VectorStoreIndex, SimpleDirectoryReader, StorageContext,
 import openai
 import os
 
+# from llama_index.llms
+
 with open("api_key.txt") as key:
     api_key = key.readline().strip()
-    openai.api_key = open(api_key)
+    openai.api_key = api_key
 
 storage_context = None
 index = None
