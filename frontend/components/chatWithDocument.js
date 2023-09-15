@@ -1,8 +1,14 @@
 import { Grid, Stack, TextField, Button, InputAdornment, Divider, Box, Avatar, Menu, MenuItem, ListItemIcon, IconButton, Tooltip, Typography, Card, CardContent, InputBase, OutlinedInput } from '@mui/material'
 import { FormControl } from '@mui/base/FormControl';
 import { useState, useEffect } from 'react';
+import Image from 'next/image'
+
+
+import userIcon from '../public/images/user_avatar.png'
+import botIcon from '../public/images/diverge_avatar.png'
 
 import queryIndex from '@/pages/api/queryIndex';
+import Message from './message';
 
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import SearchIcon from '@mui/icons-material/Search';
@@ -27,11 +33,11 @@ export default function ChatWithDocument() {
             setLoading(true)
             newMessages = [...messages, {
                 text: queryMessage,
-                type: "Question"
+                type: "Q"
             }]
-            console.log(newMessages)
+            // console.log(newMessages)
             setMessages(newMessages);
-            console.log(messages)
+            // console.log(messages)
 
             queryIndex(queryMessage).then((response) => {
                 // console.log(response.response)
@@ -40,7 +46,7 @@ export default function ChatWithDocument() {
                 console.log(messages)
                 newMessages = [...newMessages, {
                     text: response.text,
-                    type: "Answer"
+                    type: "A"
                     // sources: response.
                 }]
                 setMessages(newMessages);
@@ -63,14 +69,17 @@ export default function ChatWithDocument() {
                         </CardContent>
                     </Card> */}
                     {messages.map((message, index) => 
-                        <Card sx={{ minWidth: 275 }} key={`#${index}`}>
-                            <CardContent>
-                                <Typography>{message.type}: {message.text}</Typography>
-                            </CardContent>
-                        </Card>
+                        <Stack direction="row" alignItems="flex-start" spacing={2} className="p-2 m-2">
+                            <Image 
+                            src={message.type == "Q" ? userIcon : botIcon}
+                            alt={message.type == "Q" ? "User Icon" : "Diverge Bot Icon"}
+                            className="h-8 w-8"
+                            />
+                            <Message type={message.type} key={index} message={message.text} />
+                        </Stack>
                     )}
                 </Box>
-                <FormControl variant="outlined" fullwidth>
+                <FormControl id="query-text-form" variant="outlined" fullwidth>
                     <OutlinedInput 
                         required 
                         id="query-text" 
@@ -79,7 +88,7 @@ export default function ChatWithDocument() {
                         value={queryMessage}
                         onChange={(value) => {setQueryMessage(value.target.value)}}
                         disabled={isLoading}
-                        fullwidth
+                        className="w-full"
                         endAdornment={
                             <InputAdornment position="end">
                                 <IconButton

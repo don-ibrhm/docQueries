@@ -31,23 +31,22 @@ export default function Home() {
             container 
             justifyContent="flex-start" 
             alignItems="center"
-            className="min-h-screen min-w-screen p-0 m-0">
-            <Grid item container xs={0} md={2} className="invisible sm:visible w-full h-full p-0 m-0" justifyContent="flex-start" alignItems="center" spacing={0}>
-                <Grid item className="w-full h-full p-0 m-0">
-                    <Stack spacing={4} margin={0} alignItems="center" justifyContent="center" className="w-full p-0 m-0 pt-7">
+            className="min-h-screen min-w-screen p-0 m-0"
+            >
+            <Grid item container xs={0} md={3} className="invisible md:visible h-full w-1/6 p-0 m-0" justifyContent="flex-start" alignItems="center" spacing={0}> {} 
+                <Grid item className="w-1/6 h-full p-0 m-0">  {/* NOTE: do i need this, wont grid componenet interact wit hstack? */}
+                    <Stack spacing={4} margin={0} alignItems="center" justifyContent="center" className="w-1/6 p-0 m-0 pt-7">
                         <Image
                             src={logo}
                             width={135}
                             height={30}
                             alt="DivergeGPT Product Logo"
                         />
-
                         <DocumentViewer refreshNeeded={refreshNeeded} setRefreshNeeded={setRefreshNeeded}/>
                     </Stack>
                 </Grid>
-                <Divider orientation="vertical" flexItem />
             </Grid>
-            <Grid item container xs={12} md={10} className="" justifyContent="center" alignItems="center" spacing={5}>
+            <Grid item container xs={12} md={9} justifyContent="center" alignItems="center" spacing={5} className="w-5/6">
                 {/* <Header /> */}
                 <UserMenu />
                 <ChatWithDocument />

@@ -69,15 +69,15 @@ export default function Documents({ refreshNeeded, setRefreshNeeded }) {
                         <CardContent className="p-0">
                             <Stack className="w-40 h-11" justifyContent="space-evenly">
                                 <Stack direction="row" className="w-full h-4" alignItems="center">
-                                    <Image src={pdfIcon} className="w-4 h-4 mr-2"/>
-                                    {/* <PictureAsPdfIcon sx={{color: "#E5252A"}} /> */}
+                                    <Image src={pdfIcon} alt="PDF Icon" className="w-4 h-4 mr-2"/>
+                                    {/* <PictureAsPdfIcon sx={{color: "#E5252A"}} className="w-4 h-4 mr-2"/> */}
                                     <Typography sx={{fontFamily: "DM Sans", fontSize: 14, lineHeight: '16px', color: "#5E5E5E", fontWeight: 500}} className="w-34 h-4">
                                         {nameClip(value)}
                                     </Typography>
                                 </Stack>
                                 <Stack direction="row" className="w-full h-5" alignItems="center">
-                                    <Image src={clockIcon} className="w-4.5 h-4.5 mr-2"/>
-                                    {/* <AccessTimeIcon sx={{color: "#CCC"}} /> */}
+                                    {/* <Image src={clockIcon} className="w-4.5 h-4.5 mr-2"/> */}
+                                    <AccessTimeIcon sx={{color: "#828083"}} className="w-4 h-4 mr-2" />
                                     <Typography sx={{fontFamily: "DM Sans", fontSize: 12, lineHeight: '20px', color: "#8F8F8F"}}>
                                         20-Aug-2023 | 13:44
                                     </Typography>
